@@ -1,0 +1,20 @@
+import {BadRequestException} from '@nestjs/common';
+import {z} from 'zod';
+export function parse<T>(schema:z.ZodType<T>,data:unknown):T { const result=schema.safeParse(data); if(!result.success) throw new BadRequestException({message:'Données invalides',errors:result.error.flatten()}); return result.data; }
+const text=z.string().trim().min(1).max(200);
+const optional=z.string().trim().max(2000).optional();
+const image=z.string().url().max(2000).refine(v=>/^https?:\/\//.test(v),'URL HTTP requise');
+export const credentials=z.object({email:z.string().email().max(254).transform(v=>v.toLowerCase()),password:z.string().min(8).max(72)}).strict();
+export const registration=credentials.extend({role:z.enum(['CLIENT','COMPANY']),firstName:text,lastName:text,companyName:text.optional(),city:text.optional(),businessSector:text.optional()}).strict().refine(v=>v.role!=='COMPANY'||!!(v.companyName&&v.city&&v.businessSector),'Informations entreprise requises');
+export const companyPatch=z.object({name:text,description:z.string().max(10000),email:z.string().email(),phone:z.string().max(50),website:z.union([image,z.literal('')]).optional(),address:z.string().max(500),city:text,country:text,businessSector:text,hours:optional,region:optional,logo:image.optional(),coverImage:image.optional()}).partial().strict();
+export const review=z.object({status:z.enum(['APPROVED','REJECTED','SUSPENDED']),note:z.string().trim().max(2000).optional()}).strict().refine(v=>v.status==='APPROVED'||!!v.note,'Un motif est requis');
+export const product=z.object({id:text.optional(),companyId:text,categoryId:text,name:text,description:z.string().max(10000),images:z.array(image).max(10),unit:text,unitPrice:z.number().finite().min(0).max(1000000000000),availability:z.enum(['AVAILABLE','UNAVAILABLE','ON_REQUEST']),status:z.enum(['DRAFT','PUBLISHED','ARCHIVED']),specs:z.string().max(4000).optional()}).strict();
+export const category=z.object({id:text.optional(),name:text}).strict();
+export const member=z.object({userId:text,companyId:text,membershipRole:z.enum(['MANAGER','EDITOR'])}).strict();
+export const userPatch=z.object({firstName:text.optional(),lastName:text.optional(),phone:z.string().max(50).optional(),avatar:image.optional()}).strict();
+export const conversation=z.object({companyId:text,subject:text,body:z.string().trim().min(1).max(10000)}).strict();
+export const message=z.object({body:z.string().trim().min(1).max(10000)}).strict();
+export const quantity=z.object({quantity:z.number().int().min(1).max(100000)}).strict();
+export const cartItem=quantity.extend({productId:text}).strict();
+export const active=z.object({isActive:z.boolean()}).strict();
+export const changePassword=z.object({currentPassword:z.string().max(72),password:z.string().min(12).max(72)}).strict();

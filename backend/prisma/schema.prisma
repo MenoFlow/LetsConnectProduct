@@ -1,0 +1,193 @@
+generator client {
+ provider = "prisma-client-js"
+}
+datasource db {
+ provider = "postgresql"
+ url = env("DATABASE_URL")
+}
+enum UserRole {
+ CLIENT
+ COMPANY
+ ADMIN
+}
+enum CompanyStatus {
+ PENDING
+ APPROVED
+ REJECTED
+ SUSPENDED
+}
+enum MembershipRole {
+ OWNER
+ MANAGER
+ EDITOR
+}
+enum ProductStatus {
+ DRAFT
+ PUBLISHED
+ ARCHIVED
+}
+enum Availability {
+ AVAILABLE
+ UNAVAILABLE
+ ON_REQUEST
+}
+model User {
+ id String @id @default(cuid())
+ firstName String
+ lastName String
+ email String @unique
+ phone String?
+ avatar String?
+ passwordHash String
+ role UserRole @default(CLIENT)
+ isActive Boolean @default(true)
+ createdAt DateTime @default(now())
+ ownedCompanies Company[] @relation("Owner")
+ memberships CompanyMember[]
+ conversations Conversation[]
+ messages Message[]
+ favorites Favorite[]
+ cart Cart?
+ sessions Session[]
+}
+model Session {
+ id String @id
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ expiresAt DateTime
+ createdAt DateTime @default(now())
+ @@index([userId])
+ @@index([expiresAt])
+}
+model Company {
+ id String @id @default(cuid())
+ ownerId String
+ owner User @relation("Owner",fields:[ownerId],references:[id],onDelete:Restrict)
+ name String
+ slug String @unique
+ description String @default("")
+ logo String?
+ coverImage String?
+ email String
+ phone String @default("")
+ website String?
+ address String @default("")
+ city String
+ country String @default("Madagascar")
+ businessSector String
+ status CompanyStatus @default(PENDING)
+ isVerified Boolean @default(false)
+ createdAt DateTime @default(now())
+ region String?
+ hours String?
+ reviewNote String?
+ reviewedAt DateTime?
+ submittedAt DateTime @default(now())
+ members CompanyMember[]
+ products Product[]
+ conversations Conversation[]
+ favorites Favorite[]
+ activity Activity[]
+ @@index([status,city])
+}
+model CompanyMember {
+ id String @id @default(cuid())
+ companyId String
+ userId String
+ company Company @relation(fields:[companyId],references:[id],onDelete:Cascade)
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ membershipRole MembershipRole
+ @@unique([companyId,userId])
+ @@index([userId])
+}
+model Category {
+ id String @id @default(cuid())
+ name String @unique
+ products Product[]
+}
+model Product {
+ id String @id @default(cuid())
+ companyId String
+ company Company @relation(fields:[companyId],references:[id],onDelete:Cascade)
+ categoryId String
+ category Category @relation(fields:[categoryId],references:[id],onDelete:Restrict)
+ name String
+ description String
+ images String[] @default([])
+ unit String
+ unitPrice Decimal @db.Decimal(18,2)
+ availability Availability
+ status ProductStatus @default(DRAFT)
+ createdAt DateTime @default(now())
+ specs String?
+ cartItems CartItem[]
+ @@index([companyId,status])
+ @@index([categoryId])
+}
+model Cart {
+ id String @id @default(cuid())
+ userId String @unique
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ items CartItem[]
+}
+model CartItem {
+ id String @id @default(cuid())
+ cartId String
+ cart Cart @relation(fields:[cartId],references:[id],onDelete:Cascade)
+ productId String
+ product Product @relation(fields:[productId],references:[id],onDelete:Cascade)
+ quantity Int
+ unitPriceSnapshot Decimal @db.Decimal(18,2)
+ @@unique([cartId,productId])
+}
+model Favorite {
+ id String @id @default(cuid())
+ userId String
+ companyId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ company Company @relation(fields:[companyId],references:[id],onDelete:Cascade)
+ createdAt DateTime @default(now())
+ @@unique([userId,companyId])
+}
+model Conversation {
+ id String @id @default(cuid())
+ companyId String
+ clientId String
+ company Company @relation(fields:[companyId],references:[id],onDelete:Cascade)
+ client User @relation(fields:[clientId],references:[id],onDelete:Restrict)
+ subject String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ messages Message[]
+ @@index([companyId,updatedAt])
+ @@index([clientId,updatedAt])
+}
+model Message {
+ id String @id @default(cuid())
+ conversationId String
+ senderUserId String
+ conversation Conversation @relation(fields:[conversationId],references:[id],onDelete:Cascade)
+ sender User @relation(fields:[senderUserId],references:[id],onDelete:Restrict)
+ body String
+ createdAt DateTime @default(now())
+ readAt DateTime?
+ @@index([conversationId,createdAt])
+}
+model Activity {
+ id String @id @default(cuid())
+ companyId String
+ company Company @relation(fields:[companyId],references:[id],onDelete:Cascade)
+ date DateTime
+ profileViews Int @default(0)
+ productViews Int @default(0)
+ messages Int @default(0)
+ @@unique([companyId,date])
+}
+model AuditLog {
+ id String @id @default(cuid())
+ actorId String
+ action String
+ targetId String
+ createdAt DateTime @default(now())
+ @@index([actorId,createdAt])
+}

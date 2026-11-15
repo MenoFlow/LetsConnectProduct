@@ -1,0 +1,1011 @@
+{
+  "DEMO_PASSWORD": "demo1234",
+  "users": [
+    {
+      "id": "u-1",
+      "firstName": "Hery",
+      "lastName": "Rakoto",
+      "email": "company@materialconnect.mg",
+      "phone": "+261 34 00 000 01",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-01-12"
+    },
+    {
+      "id": "u-2",
+      "firstName": "Lalao",
+      "lastName": "Rasoa",
+      "email": "lalao@soaagro.mg",
+      "phone": "+261 34 00 000 02",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-02-03"
+    },
+    {
+      "id": "u-3",
+      "firstName": "Fanja",
+      "lastName": "Andria",
+      "email": "client@materialconnect.mg",
+      "phone": "+261 34 00 000 10",
+      "role": "CLIENT",
+      "isActive": true,
+      "createdAt": "2026-03-21"
+    },
+    {
+      "id": "u-4",
+      "firstName": "Admin",
+      "lastName": "Exemple",
+      "email": "admin@materialconnect.mg",
+      "role": "ADMIN",
+      "isActive": true,
+      "createdAt": "2026-01-01"
+    },
+    {
+      "id": "u-5",
+      "firstName": "Naina",
+      "lastName": "Rabe",
+      "email": "naina@fbf.mg",
+      "phone": "+261 34 00 000 03",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-02-14"
+    },
+    {
+      "id": "u-6",
+      "firstName": "Rija",
+      "lastName": "Randrianarisoa",
+      "email": "rija@antsirabe-cereales.mg",
+      "phone": "+261 34 00 000 04",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-03-02"
+    },
+    {
+      "id": "u-7",
+      "firstName": "Hanitra",
+      "lastName": "Rakotomalala",
+      "email": "hanitra@deltaenergie.mg",
+      "phone": "+261 34 00 000 05",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-04-09"
+    },
+    {
+      "id": "u-8",
+      "firstName": "Mamy",
+      "lastName": "Rabenandrasana",
+      "email": "mamy@karibo-mineraux.mg",
+      "phone": "+261 34 00 000 06",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-05-18"
+    },
+    {
+      "id": "u-9",
+      "firstName": "Andry",
+      "lastName": "Raveloson",
+      "email": "andry@ivato-mp.mg",
+      "phone": "+261 34 00 000 07",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-10-27"
+    },
+    {
+      "id": "u-10",
+      "firstName": "Miora",
+      "lastName": "Ranaivonirina",
+      "email": "manager@materialconnect.mg",
+      "phone": "+261 34 00 000 11",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-02-20"
+    },
+    {
+      "id": "u-11",
+      "firstName": "Tovo",
+      "lastName": "Randria",
+      "email": "editor@materialconnect.mg",
+      "phone": "+261 34 00 000 12",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-06-30"
+    },
+    {
+      "id": "u-12",
+      "firstName": "Hanta",
+      "lastName": "Ranaivo",
+      "email": "hanta@client.mg",
+      "phone": "+261 34 00 000 13",
+      "role": "CLIENT",
+      "isActive": false,
+      "createdAt": "2026-07-11"
+    },
+    {
+      "id": "u-13",
+      "firstName": "Solofo",
+      "lastName": "Randriamampianina",
+      "email": "solofo@anjozorobe-elevage.mg",
+      "phone": "+261 34 00 000 14",
+      "role": "COMPANY",
+      "isActive": false,
+      "createdAt": "2026-08-05"
+    },
+    {
+      "id": "u-14",
+      "firstName": "Baovao",
+      "lastName": "Rakotondraibe",
+      "email": "baovao@toamasina-sisal.mg",
+      "phone": "+261 34 00 000 15",
+      "role": "COMPANY",
+      "isActive": true,
+      "createdAt": "2026-09-19"
+    }
+  ],
+  "companies": [
+    {
+      "id": "tany-metaux",
+      "ownerId": "u-1",
+      "name": "Tany Métaux",
+      "slug": "tany-metaux",
+      "description": "Négoce de métaux industriels et précieux : cuivre, aluminium, fer, zinc, nickel et or, en lots certifiés.",
+      "email": "contact@tanymetaux.mg",
+      "phone": "+261 34 00 000 01",
+      "website": "https://tanymetaux.mg",
+      "address": "Lot II M 42, Ampefiloha, Antananarivo 101",
+      "city": "Antananarivo",
+      "region": "Analamanga",
+      "country": "Madagascar",
+      "businessSector": "Métaux industriels",
+      "status": "APPROVED",
+      "isVerified": true,
+      "hours": "Lundi – samedi, 7h30 – 17h00",
+      "createdAt": "2026-01-12"
+    },
+    {
+      "id": "soa-agro-export",
+      "ownerId": "u-2",
+      "name": "Soa Agro Export",
+      "slug": "soa-agro-export",
+      "description": "Collecte et export de cultures de rente de la côte Est : café, cacao, girofle et sucre de canne.",
+      "email": "contact@soaagro.mg",
+      "phone": "+261 34 00 000 02",
+      "address": "Ampasanandringitra, Toamasina 501",
+      "city": "Toamasina",
+      "region": "Atsinanana",
+      "country": "Madagascar",
+      "businessSector": "Cultures agricoles",
+      "status": "APPROVED",
+      "isVerified": true,
+      "hours": "Lundi – vendredi, 8h00 – 17h30",
+      "createdAt": "2026-02-03",
+      "website": "https://soaagro.mg"
+    },
+    {
+      "id": "fianarantsoa-bois-fibres",
+      "ownerId": "u-5",
+      "name": "Fianarantsoa Bois & Fibres",
+      "slug": "fianarantsoa-bois-fibres",
+      "description": "Bois brut, grumes et fibres végétales (coton, sisal, latex) issus des Hautes Terres.",
+      "email": "contact@fbf.mg",
+      "phone": "+261 34 00 000 03",
+      "address": "Tanety, Fianarantsoa 301",
+      "city": "Fianarantsoa",
+      "region": "Haute Matsiatra",
+      "country": "Madagascar",
+      "businessSector": "Fibres & bois",
+      "status": "APPROVED",
+      "isVerified": false,
+      "hours": "Lundi – samedi, 7h00 – 16h00",
+      "createdAt": "2026-02-14",
+      "website": "https://fbf.mg"
+    },
+    {
+      "id": "antsirabe-cereales",
+      "ownerId": "u-6",
+      "name": "Antsirabe Céréales",
+      "slug": "antsirabe-cereales",
+      "description": "Céréales et oléagineux du Vakinankaratra : riz paddy, blé, maïs et soja en vrac.",
+      "email": "contact@antsirabe-cereales.mg",
+      "phone": "+261 34 00 000 04",
+      "website": "https://antsirabe-cereales.mg",
+      "address": "Soavinandriateny, Antsirabe 111",
+      "city": "Antsirabe",
+      "region": "Vakinankaratra",
+      "country": "Madagascar",
+      "businessSector": "Céréales",
+      "status": "APPROVED",
+      "isVerified": true,
+      "hours": "Lundi – samedi, 7h30 – 17h00",
+      "createdAt": "2026-03-02"
+    },
+    {
+      "id": "delta-energie",
+      "ownerId": "u-7",
+      "name": "Delta Énergie",
+      "slug": "delta-energie",
+      "description": "Approvisionnement en ressources énergétiques : pétrole brut, gaz naturel et charbon.",
+      "email": "contact@deltaenergie.mg",
+      "phone": "+261 34 00 000 05",
+      "address": "Ankorondrano, Antananarivo 101",
+      "city": "Antananarivo",
+      "region": "Analamanga",
+      "country": "Madagascar",
+      "businessSector": "Énergie",
+      "status": "APPROVED",
+      "isVerified": false,
+      "hours": "Lundi – vendredi, 8h00 – 18h00",
+      "createdAt": "2026-04-09",
+      "website": "https://deltaenergie.mg"
+    },
+    {
+      "id": "karibo-mineraux",
+      "ownerId": "u-8",
+      "name": "Karibo Minéraux",
+      "slug": "karibo-mineraux",
+      "description": "Extraction de minéraux du Boeny : bauxite, sable siliceux, argile kaolinique et sel marin.",
+      "email": "contact@karibo-mineraux.mg",
+      "phone": "+261 34 00 000 06",
+      "address": "Amphitrite, Mahajanga 401",
+      "city": "Mahajanga",
+      "region": "Boeny",
+      "country": "Madagascar",
+      "businessSector": "Minéraux",
+      "status": "APPROVED",
+      "isVerified": true,
+      "hours": "Lundi – samedi, 6h30 – 15h30",
+      "createdAt": "2026-05-18",
+      "website": "https://karibo-mineraux.mg"
+    },
+    {
+      "id": "ivato-metaux-precieux",
+      "ownerId": "u-9",
+      "name": "Ivato Métaux Précieux",
+      "slug": "ivato-metaux-precieux",
+      "description": "Comptoir d’achat et de vente d’or, d’argent et de platine, avec traçabilité des lots.",
+      "email": "contact@ivato-mp.mg",
+      "phone": "+261 34 00 000 07",
+      "address": "Ambohimangakely, Ivato 101",
+      "city": "Antananarivo",
+      "region": "Analamanga",
+      "country": "Madagascar",
+      "businessSector": "Métaux précieux",
+      "status": "PENDING",
+      "isVerified": false,
+      "hours": "Lundi – samedi, 7h00 – 17h00",
+      "createdAt": "2026-10-27",
+      "website": "https://ivato-mp.mg"
+    },
+    {
+      "id": "anjozorobe-elevage",
+      "ownerId": "u-13",
+      "name": "Anjozorobe Élevage",
+      "slug": "anjozorobe-elevage",
+      "description": "Bétail sur pied et produits d’origine animale : zébus, cuirs bruts et laine.",
+      "email": "contact@anjozorobe-elevage.mg",
+      "phone": "+261 34 00 000 14",
+      "address": "Anjozorobe, Analamanga",
+      "city": "Anjozorobe",
+      "region": "Analamanga",
+      "country": "Madagascar",
+      "businessSector": "Produits d’origine animale",
+      "status": "SUSPENDED",
+      "isVerified": false,
+      "hours": "Lundi – vendredi, 8h00 – 16h00",
+      "createdAt": "2026-08-05",
+      "website": "https://anjozorobe-elevage.mg"
+    },
+    {
+      "id": "toamasina-sisal",
+      "ownerId": "u-14",
+      "name": "Toamasina Sisal",
+      "slug": "toamasina-sisal",
+      "description": "Fibres de sisal brutes et peignées pour la corderie et l’industrie textile.",
+      "email": "contact@toamasina-sisal.mg",
+      "phone": "+261 34 00 000 15",
+      "address": "Behoririka, Toamasina 501",
+      "city": "Toamasina",
+      "region": "Atsinanana",
+      "country": "Madagascar",
+      "businessSector": "Fibres & bois",
+      "status": "REJECTED",
+      "isVerified": false,
+      "hours": "Lundi – samedi, 8h00 – 17h00",
+      "createdAt": "2026-09-19",
+      "website": "https://toamasina-sisal.mg"
+    }
+  ],
+  "companyMembers": [
+    {
+      "id": "cm-1",
+      "userId": "u-1",
+      "companyId": "tany-metaux",
+      "membershipRole": "OWNER"
+    },
+    {
+      "id": "cm-2",
+      "userId": "u-10",
+      "companyId": "tany-metaux",
+      "membershipRole": "MANAGER"
+    },
+    {
+      "id": "cm-3",
+      "userId": "u-11",
+      "companyId": "tany-metaux",
+      "membershipRole": "EDITOR"
+    },
+    {
+      "id": "cm-4",
+      "userId": "u-2",
+      "companyId": "soa-agro-export",
+      "membershipRole": "OWNER"
+    },
+    {
+      "id": "cm-5",
+      "userId": "u-5",
+      "companyId": "fianarantsoa-bois-fibres",
+      "membershipRole": "OWNER"
+    },
+    {
+      "id": "cm-6",
+      "userId": "u-6",
+      "companyId": "antsirabe-cereales",
+      "membershipRole": "OWNER"
+    },
+    {
+      "id": "cm-7",
+      "userId": "u-7",
+      "companyId": "delta-energie",
+      "membershipRole": "OWNER"
+    },
+    {
+      "id": "cm-8",
+      "userId": "u-8",
+      "companyId": "karibo-mineraux",
+      "membershipRole": "OWNER"
+    },
+    {
+      "id": "cm-9",
+      "userId": "u-9",
+      "companyId": "ivato-metaux-precieux",
+      "membershipRole": "OWNER"
+    },
+    {
+      "id": "cm-10",
+      "userId": "u-13",
+      "companyId": "anjozorobe-elevage",
+      "membershipRole": "OWNER"
+    },
+    {
+      "id": "cm-11",
+      "userId": "u-14",
+      "companyId": "toamasina-sisal",
+      "membershipRole": "OWNER"
+    }
+  ],
+  "favorites": [
+    {
+      "id": "f-1",
+      "userId": "u-3",
+      "companyId": "tany-metaux",
+      "createdAt": "2026-11-02"
+    },
+    {
+      "id": "f-2",
+      "userId": "u-3",
+      "companyId": "karibo-mineraux",
+      "createdAt": "2026-11-06"
+    }
+  ],
+  "products": [
+    {
+      "id": "cuivre-cathode",
+      "companyId": "tany-metaux",
+      "categoryId": "metaux-industriels",
+      "name": "Cuivre cathode — grade A",
+      "description": "Cathodes de cuivre électrolytique, livrées en fardeaux cerclés.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 38500000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Pureté 99,99 % · norme LME grade A",
+      "createdAt": "2026-01-15"
+    },
+    {
+      "id": "aluminium-lingot",
+      "companyId": "tany-metaux",
+      "categoryId": "metaux-industriels",
+      "name": "Aluminium primaire en lingots",
+      "description": "Lingots d’aluminium P1020 pour fonderie et laminage.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 10800000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Pureté 99,7 % · lingots de 22 kg",
+      "createdAt": "2026-01-15"
+    },
+    {
+      "id": "minerai-fer",
+      "companyId": "tany-metaux",
+      "categoryId": "metaux-industriels",
+      "name": "Minerai de fer — fines",
+      "description": "Fines de minerai de fer à haute teneur, chargement en vrac.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 520000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Teneur Fe 62 % · humidité < 9 %",
+      "createdAt": "2026-01-20"
+    },
+    {
+      "id": "zinc-lingot",
+      "companyId": "tany-metaux",
+      "categoryId": "metaux-industriels",
+      "name": "Zinc SHG en lingots",
+      "description": "Zinc spécial haute qualité pour galvanisation et alliages.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 12400000,
+      "availability": "ON_REQUEST",
+      "status": "PUBLISHED",
+      "specs": "Pureté 99,995 %",
+      "createdAt": "2026-01-22"
+    },
+    {
+      "id": "nickel-briquettes",
+      "companyId": "tany-metaux",
+      "categoryId": "metaux-industriels",
+      "name": "Nickel en briquettes",
+      "description": "Briquettes de nickel issues du raffinage d’Ambatovy.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 72000000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Pureté 99,8 % · fûts de 250 kg",
+      "createdAt": "2026-01-22"
+    },
+    {
+      "id": "or-lingot-1kg",
+      "companyId": "tany-metaux",
+      "categoryId": "metaux-precieux",
+      "name": "Or affiné — lingot 1 kg",
+      "description": "Lingot d’or affiné avec certificat d’essai.",
+      "images": [],
+      "unit": "Kilogramme",
+      "unitPrice": 330000000,
+      "availability": "ON_REQUEST",
+      "status": "PUBLISHED",
+      "specs": "Titre 999,9 ‰ · certificat d’analyse",
+      "createdAt": "2026-02-04"
+    },
+    {
+      "id": "argent-granules",
+      "companyId": "tany-metaux",
+      "categoryId": "metaux-precieux",
+      "name": "Argent en granulés",
+      "description": "Granulés d’argent fin pour bijouterie et industrie.",
+      "images": [],
+      "unit": "Kilogramme",
+      "unitPrice": 4600000,
+      "availability": "ON_REQUEST",
+      "status": "DRAFT",
+      "specs": "Titre 999 ‰",
+      "createdAt": "2026-11-03"
+    },
+    {
+      "id": "bauxite-brute",
+      "companyId": "karibo-mineraux",
+      "categoryId": "mineraux",
+      "name": "Bauxite brute",
+      "description": "Bauxite destinée à la production d’alumine, en vrac.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 290000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Al₂O₃ 48 % · SiO₂ < 5 %",
+      "createdAt": "2026-05-20"
+    },
+    {
+      "id": "sable-siliceux",
+      "companyId": "karibo-mineraux",
+      "categoryId": "mineraux",
+      "name": "Sable siliceux industriel",
+      "description": "Sable de silice lavé pour verrerie et fonderie.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 185000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "SiO₂ > 98 % · granulométrie 0,1–0,6 mm",
+      "createdAt": "2026-05-20"
+    },
+    {
+      "id": "argile-kaolin",
+      "companyId": "karibo-mineraux",
+      "categoryId": "mineraux",
+      "name": "Argile kaolinique",
+      "description": "Kaolin brut pour céramique et papeterie.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 240000,
+      "availability": "ON_REQUEST",
+      "status": "PUBLISHED",
+      "specs": "Blancheur 85 %",
+      "createdAt": "2026-06-02"
+    },
+    {
+      "id": "sel-marin",
+      "companyId": "karibo-mineraux",
+      "categoryId": "mineraux",
+      "name": "Sel marin brut",
+      "description": "Sel marin récolté dans les salines du Boeny, en sacs ou en vrac.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 420000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "NaCl > 97 %",
+      "createdAt": "2026-02-18"
+    },
+    {
+      "id": "cafe-robusta",
+      "companyId": "soa-agro-export",
+      "categoryId": "cereales-cultures",
+      "name": "Café vert robusta",
+      "description": "Café vert robusta de la côte Est, trié et calibré.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 14500000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Grade 1 · humidité < 12,5 %",
+      "createdAt": "2026-02-18"
+    },
+    {
+      "id": "cacao-feves",
+      "companyId": "soa-agro-export",
+      "categoryId": "cereales-cultures",
+      "name": "Fèves de cacao fermentées",
+      "description": "Cacao fin de la Sambirano, fermenté et séché.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 29000000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Fermentation 6 jours · sacs de 60 kg",
+      "createdAt": "2026-03-06"
+    },
+    {
+      "id": "sucre-roux",
+      "companyId": "soa-agro-export",
+      "categoryId": "cereales-cultures",
+      "name": "Sucre de canne brut",
+      "description": "Sucre roux de canne pour raffinage.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 3200000,
+      "availability": "UNAVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Polarisation 98,5°",
+      "createdAt": "2026-04-12"
+    },
+    {
+      "id": "riz-paddy",
+      "companyId": "antsirabe-cereales",
+      "categoryId": "cereales-cultures",
+      "name": "Riz paddy",
+      "description": "Riz paddy non décortiqué, récolte de la saison.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 1900000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Humidité < 14 % · sacs de 70 kg",
+      "createdAt": "2026-04-12"
+    },
+    {
+      "id": "ble-tendre",
+      "companyId": "antsirabe-cereales",
+      "categoryId": "cereales-cultures",
+      "name": "Blé tendre",
+      "description": "Blé tendre panifiable du Vakinankaratra.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 1650000,
+      "availability": "ON_REQUEST",
+      "status": "PUBLISHED",
+      "specs": "Protéines 11 %",
+      "createdAt": "2026-04-28"
+    },
+    {
+      "id": "mais-grain",
+      "companyId": "antsirabe-cereales",
+      "categoryId": "cereales-cultures",
+      "name": "Maïs grain",
+      "description": "Maïs jaune séché pour alimentation animale et meunerie.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 1250000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Humidité < 14 %",
+      "createdAt": "2026-05-07"
+    },
+    {
+      "id": "soja-graines",
+      "companyId": "antsirabe-cereales",
+      "categoryId": "cereales-cultures",
+      "name": "Graines de soja",
+      "description": "Soja non OGM pour trituration.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 2300000,
+      "availability": "AVAILABLE",
+      "status": "ARCHIVED",
+      "specs": "Huile 19 % · protéines 36 %",
+      "createdAt": "2026-02-08"
+    },
+    {
+      "id": "petrole-brut",
+      "companyId": "delta-energie",
+      "categoryId": "energie",
+      "name": "Pétrole brut",
+      "description": "Pétrole brut lourd, livraison par citerne ou au terminal.",
+      "images": [],
+      "unit": "Baril",
+      "unitPrice": 360000,
+      "availability": "ON_REQUEST",
+      "status": "PUBLISHED",
+      "specs": "Densité API 22°",
+      "createdAt": "2026-02-08"
+    },
+    {
+      "id": "gaz-naturel",
+      "companyId": "delta-energie",
+      "categoryId": "energie",
+      "name": "Gaz naturel liquéfié",
+      "description": "Gaz naturel liquéfié pour usage industriel.",
+      "images": [],
+      "unit": "MMBtu",
+      "unitPrice": 55000,
+      "availability": "ON_REQUEST",
+      "status": "PUBLISHED",
+      "specs": "Pouvoir calorifique supérieur standard",
+      "createdAt": "2026-02-25"
+    },
+    {
+      "id": "charbon-thermique",
+      "companyId": "delta-energie",
+      "categoryId": "energie",
+      "name": "Charbon thermique",
+      "description": "Charbon thermique pour centrales et cimenteries.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 650000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "PCI 5 800 kcal/kg",
+      "createdAt": "2026-03-11"
+    },
+    {
+      "id": "bois-grumes-pin",
+      "companyId": "fianarantsoa-bois-fibres",
+      "categoryId": "fibres-bois",
+      "name": "Grumes de pin",
+      "description": "Grumes de pin issues de forêts de plantation gérées.",
+      "images": [],
+      "unit": "m³",
+      "unitPrice": 380000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Diamètre 25–40 cm",
+      "createdAt": "2026-03-11"
+    },
+    {
+      "id": "coton-fibre",
+      "companyId": "fianarantsoa-bois-fibres",
+      "categoryId": "fibres-bois",
+      "name": "Coton fibre égrené",
+      "description": "Coton égrené en balles pressées.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 8200000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Longueur de fibre 28 mm",
+      "createdAt": "2026-03-27"
+    },
+    {
+      "id": "latex-naturel",
+      "companyId": "fianarantsoa-bois-fibres",
+      "categoryId": "fibres-bois",
+      "name": "Latex naturel",
+      "description": "Latex d’hévéa concentré.",
+      "images": [],
+      "unit": "Tonne",
+      "unitPrice": 6400000,
+      "availability": "ON_REQUEST",
+      "status": "PUBLISHED",
+      "specs": "Extrait sec 60 %",
+      "createdAt": "2026-11-01"
+    },
+    {
+      "id": "or-brut-ivato",
+      "companyId": "ivato-metaux-precieux",
+      "categoryId": "metaux-precieux",
+      "name": "Or brut alluvionnaire",
+      "description": "Or brut alluvionnaire avec traçabilité d’origine.",
+      "images": [],
+      "unit": "Kilogramme",
+      "unitPrice": 300000000,
+      "availability": "ON_REQUEST",
+      "status": "DRAFT",
+      "specs": "Titre moyen 920 ‰",
+      "createdAt": "2026-11-05"
+    },
+    {
+      "id": "zebus-sur-pied",
+      "companyId": "anjozorobe-elevage",
+      "categoryId": "produits-animaux",
+      "name": "Zébus sur pied",
+      "description": "Zébus adultes pour l’abattage, avec certificat vétérinaire.",
+      "images": [],
+      "unit": "Tête",
+      "unitPrice": 2600000,
+      "availability": "AVAILABLE",
+      "status": "PUBLISHED",
+      "specs": "Poids vif 300–400 kg",
+      "createdAt": "2026-08-12"
+    }
+  ],
+  "categories": [
+    {
+      "id": "metaux-industriels",
+      "name": "Métaux industriels"
+    },
+    {
+      "id": "metaux-precieux",
+      "name": "Métaux précieux"
+    },
+    {
+      "id": "mineraux",
+      "name": "Minéraux"
+    },
+    {
+      "id": "energie",
+      "name": "Énergie"
+    },
+    {
+      "id": "cereales-cultures",
+      "name": "Céréales & cultures"
+    },
+    {
+      "id": "fibres-bois",
+      "name": "Fibres & bois"
+    },
+    {
+      "id": "produits-animaux",
+      "name": "Produits d’origine animale"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conv-1",
+      "companyId": "tany-metaux",
+      "clientId": "u-3",
+      "subject": "Prix de 40 tonnes de cuivre cathode",
+      "createdAt": "2026-11-09T09:20:00Z",
+      "updatedAt": "2026-11-10T08:05:00Z"
+    },
+    {
+      "id": "conv-2",
+      "companyId": "tany-metaux",
+      "clientId": "u-3",
+      "subject": "Livraison de 120 t de minerai de fer à Toamasina",
+      "createdAt": "2026-11-10T14:05:00Z",
+      "updatedAt": "2026-11-10T14:05:00Z"
+    },
+    {
+      "id": "conv-3",
+      "companyId": "karibo-mineraux",
+      "clientId": "u-3",
+      "subject": "5 tonnes de sable siliceux pour une verrerie",
+      "createdAt": "2026-11-06T10:30:00Z",
+      "updatedAt": "2026-11-07T07:15:00Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-1",
+      "conversationId": "conv-1",
+      "senderUserId": "u-3",
+      "body": "Bonjour, pouvez-vous confirmer le prix de 40 tonnes de cuivre cathode livrées à Antananarivo ?",
+      "createdAt": "2026-11-09T09:20:00Z"
+    },
+    {
+      "id": "msg-2",
+      "conversationId": "conv-1",
+      "senderUserId": "u-1",
+      "body": "Bonjour Fanja, le prix est bien de 38 500 000 Ar la tonne pour 40 tonnes. Transport offert au-delà de 20 tonnes.",
+      "createdAt": "2026-11-09T11:42:00Z"
+    },
+    {
+      "id": "msg-3",
+      "conversationId": "conv-1",
+      "senderUserId": "u-3",
+      "body": "Parfait, je note la référence dans ma liste de besoins. Merci.",
+      "createdAt": "2026-11-10T08:05:00Z"
+    },
+    {
+      "id": "msg-4",
+      "conversationId": "conv-2",
+      "senderUserId": "u-3",
+      "body": "Besoin de 120 tonnes de minerai de fer livrées au port de Toamasina avant fin novembre. Est-ce possible ?",
+      "createdAt": "2026-11-10T14:05:00Z"
+    },
+    {
+      "id": "msg-5",
+      "conversationId": "conv-3",
+      "senderUserId": "u-3",
+      "body": "Bonjour, 5 tonnes de sable siliceux sont-elles disponibles samedi matin ?",
+      "createdAt": "2026-11-06T10:30:00Z"
+    },
+    {
+      "id": "msg-6",
+      "conversationId": "conv-3",
+      "senderUserId": "u-8",
+      "body": "Bonjour, oui pour samedi 7h. Le prix est de 925 000 Ar livré sur site.",
+      "createdAt": "2026-11-07T07:15:00Z"
+    }
+  ],
+  "activity": [
+    {
+      "id": "a-1",
+      "companyId": "tany-metaux",
+      "date": "2026-01-01",
+      "profileViews": 195,
+      "productViews": 428,
+      "messages": 4
+    },
+    {
+      "id": "a-2",
+      "companyId": "tany-metaux",
+      "date": "2026-02-01",
+      "profileViews": 261,
+      "productViews": 572,
+      "messages": 8
+    },
+    {
+      "id": "a-3",
+      "companyId": "tany-metaux",
+      "date": "2026-03-01",
+      "profileViews": 259,
+      "productViews": 529,
+      "messages": 6
+    },
+    {
+      "id": "a-4",
+      "companyId": "tany-metaux",
+      "date": "2026-04-01",
+      "profileViews": 286,
+      "productViews": 623,
+      "messages": 11
+    },
+    {
+      "id": "a-5",
+      "companyId": "tany-metaux",
+      "date": "2026-05-01",
+      "profileViews": 378,
+      "productViews": 793,
+      "messages": 14
+    },
+    {
+      "id": "a-6",
+      "companyId": "tany-metaux",
+      "date": "2026-06-01",
+      "profileViews": 403,
+      "productViews": 813,
+      "messages": 10
+    },
+    {
+      "id": "a-7",
+      "companyId": "tany-metaux",
+      "date": "2026-07-01",
+      "profileViews": 423,
+      "productViews": 914,
+      "messages": 12
+    },
+    {
+      "id": "a-8",
+      "companyId": "tany-metaux",
+      "date": "2026-08-01",
+      "profileViews": 442,
+      "productViews": 906,
+      "messages": 17
+    },
+    {
+      "id": "a-9",
+      "companyId": "tany-metaux",
+      "date": "2026-09-01",
+      "profileViews": 466,
+      "productViews": 965,
+      "messages": 13
+    },
+    {
+      "id": "a-10",
+      "companyId": "tany-metaux",
+      "date": "2026-10-01",
+      "profileViews": 555,
+      "productViews": 1113,
+      "messages": 19
+    },
+    {
+      "id": "a-11",
+      "companyId": "tany-metaux",
+      "date": "2026-11-01",
+      "profileViews": 571,
+      "productViews": 1175,
+      "messages": 20
+    },
+    {
+      "id": "a-12",
+      "companyId": "tany-metaux",
+      "date": "2026-12-01",
+      "profileViews": 582,
+      "productViews": 1188,
+      "messages": 16
+    },
+    {
+      "id": "a-13",
+      "companyId": "soa-agro-export",
+      "date": "2026-06-01",
+      "profileViews": 88,
+      "productViews": 141,
+      "messages": 3
+    },
+    {
+      "id": "a-14",
+      "companyId": "soa-agro-export",
+      "date": "2026-07-01",
+      "profileViews": 104,
+      "productViews": 178,
+      "messages": 5
+    },
+    {
+      "id": "a-15",
+      "companyId": "soa-agro-export",
+      "date": "2026-08-01",
+      "profileViews": 121,
+      "productViews": 203,
+      "messages": 4
+    },
+    {
+      "id": "a-16",
+      "companyId": "soa-agro-export",
+      "date": "2026-09-01",
+      "profileViews": 137,
+      "productViews": 236,
+      "messages": 7
+    },
+    {
+      "id": "a-17",
+      "companyId": "soa-agro-export",
+      "date": "2026-10-01",
+      "profileViews": 152,
+      "productViews": 268,
+      "messages": 6
+    },
+    {
+      "id": "a-18",
+      "companyId": "soa-agro-export",
+      "date": "2026-11-01",
+      "profileViews": 168,
+      "productViews": 291,
+      "messages": 9
+    }
+  ]
+}
