@@ -1,5 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { onSessionExpired } from "@/lib/api";
+import { stopRealtime } from "@/lib/realtime";
 import { useAuthStore } from "@/stores/authStore";
 import { useDbStore } from "@/stores/dbStore";
 import { client, json, noContent, resetStores, stubFetch } from "@/test/fixtures";
@@ -7,6 +8,10 @@ import { client, json, noContent, resetStores, stubFetch } from "@/test/fixtures
 // La session vit dans le cookie httpOnly posé par le backend : le navigateur ne
 // garde que la copie en mémoire de l'utilisateur renvoyé par l'API.
 describe("session", () => {
+  afterEach(() => {
+    stopRealtime();
+  });
+
   beforeEach(() => {
     resetStores();
   });

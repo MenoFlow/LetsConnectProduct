@@ -1,11 +1,37 @@
 // Messagerie en deux colonnes (contacts + conversation), partagée par les
 // espaces client et entreprise. Les données viennent du dépôt via les props ;
 // l'envoi attend la réponse du serveur.
-import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ArrowLeft, CheckCheck, MessageSquare, Search, Send } from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type MouseEvent,
+  type ReactNode,
+} from "react";
+import { ArrowLeft, CheckCheck, MessageSquare, Pencil, Search, Send, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useMessages } from "@/data/repository";
 import { errorMessage } from "@/lib/api";
+import { useRealtimeStatus } from "@/lib/realtime";
 import type { Conversation } from "@/types";
 
 export interface ChatContact {
@@ -24,6 +50,8 @@ interface ChatWorkspaceProps {
   badge?: string;
   /** Doit renvoyer la promesse de l'envoi : l'écran attend et affiche l'erreur. */
   onSend: (conversationId: string, body: string) => Promise<unknown> | void;
+  onRename?: (conversationId: string, subject: string) => Promise<unknown>;
+  onDelete?: (conversationId: string) => Promise<unknown>;
   emptyTitle: string;
   emptyText?: string;
 }
@@ -71,14 +99,22 @@ export function ChatWorkspace({
   viewerId,
   badge,
   onSend,
+  onRename,
+  onDelete,
   emptyTitle,
   emptyText,
 }: ChatWorkspaceProps) {
   const allMessages = useMessages();
+  const realtimeStatus = useRealtimeStatus();
   const [search, setSearch] = useState("");
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState("");
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [subjectDraft, setSubjectDraft] = useState("");
+  const [actionPending, setActionPending] = useState(false);
+  const [actionError, setActionError] = useState("");
   const [showConversation, setShowConversation] = useState(Boolean(selectedId));
   const streamRef = useRef<HTMLDivElement>(null);
 
@@ -120,10 +156,49 @@ export function ChatWorkspace({
     }
   };
 
+  const rename = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!selected || !onRename || !subjectDraft.trim() || actionPending) return;
+    setActionPending(true);
+    setActionError("");
+    try {
+      await onRename(selected.conversation.id, subjectDraft.trim());
+      setRenameOpen(false);
+    } catch (error) {
+      setActionError(errorMessage(error));
+    } finally {
+      setActionPending(false);
+    }
+  };
+
+  const remove = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!selected || !onDelete || actionPending) return;
+    setActionPending(true);
+    setActionError("");
+    try {
+      await onDelete(selected.conversation.id);
+      setDeleteOpen(false);
+    } catch (error) {
+      setActionError(errorMessage(error));
+    } finally {
+      setActionPending(false);
+    }
+  };
+
   return (
     <main className="chat-fill flex h-full min-h-0 flex-col overflow-hidden bg-chat-canvas p-3 sm:p-4 lg:p-6">
       <div className="mb-4 flex shrink-0 items-center justify-between gap-3">
-        <h1 className="text-base font-semibold text-foreground">{title}</h1>
+        <div>
+          <h1 className="text-base font-semibold text-foreground">{title}</h1>
+          {realtimeStatus !== "connected" && (
+            <p className="text-xs text-muted-foreground" role="status">
+              {realtimeStatus === "error"
+                ? "Connexion temps réel indisponible. Reconnexion en cours…"
+                : "Connexion temps réel…"}
+            </p>
+          )}
+        </div>
         {action}
       </div>
 
@@ -228,6 +303,39 @@ export function ChatWorkspace({
                   )}
                   {selected.detail && <span className="font-medium text-muted-foreground">{selected.detail}</span>}
                 </div>
+                {(onRename || onDelete) && (
+                  <div className="flex shrink-0 items-center gap-1">
+                    {onRename && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Modifier l’objet de la conversation"
+                        onClick={() => {
+                          setSubjectDraft(selected.conversation.subject);
+                          setActionError("");
+                          setRenameOpen(true);
+                        }}
+                      >
+                        <Pencil />
+                      </Button>
+                    )}
+                    {onDelete && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Supprimer la conversation"
+                        onClick={() => {
+                          setActionError("");
+                          setDeleteOpen(true);
+                        }}
+                      >
+                        <Trash2 className="text-destructive" />
+                      </Button>
+                    )}
+                  </div>
+                )}
               </header>
 
               <div
@@ -305,6 +413,69 @@ export function ChatWorkspace({
           )}
         </section>
       </div>
+      <Dialog
+        open={renameOpen}
+        onOpenChange={(open) => {
+          if (!actionPending) setRenameOpen(open);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Modifier l’objet</DialogTitle>
+            <DialogDescription>
+              Le nouvel objet sera visible par tous les participants.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={rename} className="space-y-4">
+            <label className="block space-y-2 text-sm font-medium" htmlFor="conversation-subject">
+              Objet de la conversation
+              <input
+                id="conversation-subject"
+                required
+                maxLength={200}
+                value={subjectDraft}
+                onChange={(event) => setSubjectDraft(event.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-normal"
+              />
+            </label>
+            {actionError && <p className="text-sm text-destructive" role="alert">{actionError}</p>}
+            <DialogFooter>
+              <Button type="button" variant="outline" disabled={actionPending} onClick={() => setRenameOpen(false)}>
+                Annuler
+              </Button>
+              <Button type="submit" disabled={actionPending || !subjectDraft.trim()}>
+                {actionPending ? "Enregistrement…" : "Enregistrer"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      <AlertDialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          if (!actionPending) setDeleteOpen(open);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Supprimer cette conversation ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action supprimera la conversation et ses messages pour tous les participants. Elle est irréversible.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          {actionError && <p className="text-sm text-destructive" role="alert">{actionError}</p>}
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={actionPending}>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={actionPending}
+              onClick={(event) => void remove(event)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {actionPending ? "Suppression…" : "Supprimer"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   );
 }

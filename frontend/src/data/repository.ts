@@ -13,6 +13,7 @@ import { useCartStore } from "@/stores/cartStore";
 import { useAuthStore, getCurrentUser as readCurrentUser } from "@/stores/authStore";
 import { useCompanyStore, getMembership } from "@/stores/companyStore";
 import { api } from "@/lib/api";
+import { emitRealtime } from "@/lib/realtime";
 import { normalizeCompany, normalizeProduct, normalizeUser } from "@/lib/normalize";
 import { DEMO_PASSWORD, demoAccounts } from "@/data/demo";
 import type { Database } from "@/types";
@@ -433,15 +434,15 @@ export function useConversationsForCurrentUser(): Conversation[] {
 
 export const sendMessage = async (
   conversationId: string,
-  senderUserId: string,
   body: string,
 ): Promise<MessageRecord> => {
-  const saved = await api<MessageRecord>(`/conversations/${conversationId}/messages`, {
-    method: "POST",
-    body: { body },
-  });
-  db().addMessage(saved);
-  return saved;
+  const result = await emitRealtime<{conversation:Conversation;message:MessageRecord}>(
+    "message:create",
+    { conversationId, body },
+  );
+  db().upsertConversation(result.conversation);
+  db().addMessage(result.message);
+  return result.message;
 };
 
 /** Ouvre une conversation et envoie son premier message ; l'identifiant vient du serveur. */
@@ -451,32 +452,43 @@ export const startConversation = async (input: {
   subject: string;
   body: string;
 }): Promise<string> => {
-  const conversation = await api<Conversation>("/conversations", {
-    method: "POST",
-    body: { companyId: input.companyId, subject: input.subject, body: input.body },
-  });
-  // Le premier message est créé côté serveur sans être renvoyé : on relit
-  // l'espace de travail pour que la conversation apparaisse avec son message.
-  await reloadWorkspace();
+  const created = await emitRealtime<Conversation & {messages:MessageRecord[]}>(
+    "conversation:create",
+    { companyId: input.companyId, subject: input.subject, body: input.body },
+  );
+  const { messages, ...conversation } = created;
+  db().upsertConversation(conversation);
+  messages.forEach((message) => db().addMessage(message));
   return conversation.id;
 };
 
 export const renameConversation = async (id: string, subject: string): Promise<Conversation> => {
-  const saved = await api<Conversation>(`/conversations/${id}`, {
-    method: "PATCH",
-    body: { subject },
-  });
+  const saved = await emitRealtime<Conversation>("conversation:rename", { id, subject });
   db().upsertConversation(saved);
   return saved;
 };
 
 export const deleteConversation = async (id: string): Promise<void> => {
-  await api(`/conversations/${id}`, { method: "DELETE" });
+  await emitRealtime<Conversation>("conversation:delete", { id });
   db().removeConversation(id);
 };
 
 /** Marque les messages de l'interlocuteur comme lus, puis relit l'espace de travail. */
 export const markConversationRead = async (id: string): Promise<void> => {
-  await api(`/conversations/${id}/read`, { method: "POST" });
+  await emitRealtime<Conversation>("conversation:mark-read", { conversationId: id });
   await reloadWorkspace();
+};
+
+export const editMessage = async (id: string, body: string): Promise<MessageRecord> => {
+  const result = await emitRealtime<{conversation:Conversation;message:MessageRecord}>(
+    "message:edit",
+    { id, body },
+  );
+  db().upsertMessage(result.message);
+  return result.message;
+};
+
+export const deleteMessage = async (id: string): Promise<void> => {
+  await emitRealtime<{conversation:Conversation;message:MessageRecord}>("message:delete", { id });
+  db().removeMessage(id);
 };

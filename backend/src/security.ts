@@ -16,6 +16,7 @@ export function assertMembership(actor:Actor,role:string|undefined,allowed:strin
 export class SessionGuard implements CanActivate {
  constructor(private readonly prisma:PrismaService,private readonly reflector:Reflector){}
  async canActivate(context:ExecutionContext){
+  if(context.getType()!=='http')return true;
   const request=context.switchToHttp().getRequest<AuthRequest>();
   if(!['GET','HEAD','OPTIONS'].includes(request.method)) {
    const origin=request.headers.origin;

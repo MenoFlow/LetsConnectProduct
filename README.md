@@ -19,6 +19,10 @@ d’origine animale et bétail. Les données de départ comportent 7 catégories
 La messagerie occupe la hauteur de la fenêtre : seuls les contacts et les
 messages défilent. Sur petit écran, ouvrir un contact affiche la conversation ;
 la flèche de retour ramène aux contacts. La déconnexion mène à `/connexion`.
+Les créations, modifications et suppressions de conversations et de messages
+passent par Socket.IO. Les changements sont diffusés en temps réel aux membres
+de l’entreprise concernée et au client ; les lectures REST servent au chargement
+initial et à la resynchronisation après reconnexion.
 
 ---
 
@@ -125,9 +129,9 @@ cp .env.example .env        # optionnel : VITE_API_URL=/api suffit en local
 bun run dev                 # http://localhost:3000
 ```
 
-Le serveur de développement Vite relaie `/api` vers `http://localhost:4000`
-(voir `frontend/vite.config.ts`). `VITE_API_URL` ne sert qu'à pointer l'API sur
-une autre origine.
+Le serveur de développement Vite relaie `/api` (y compris le WebSocket
+`/api/socket.io`) vers `http://localhost:4000` (voir `frontend/vite.config.ts`).
+`VITE_API_URL` ne sert qu'à pointer l'API et le WebSocket sur une autre origine.
 
 Ouvrir <http://localhost:3000>, puis se connecter avec un compte de démonstration :
 
@@ -173,8 +177,8 @@ n'était pas disponible dans l'environnement de vérification.
 
 ## 7. Notes de sécurité
 
-- Le cookie de session est `httpOnly`, `sameSite=lax`, et expiré après
-  30 jours ; le changement de mot de passe ferme toutes les sessions.
+- Le cookie de session `mc_session` est `httpOnly`, `sameSite=strict`, et expire
+  après 8 heures ; le changement de mot de passe ferme toutes les sessions.
 - Toute requête qui modifie une donnée doit venir de `FRONTEND_ORIGIN` et
   porter l'en-tête `X-Requested-With: MaterialConnect` (protection CSRF).
 - Les règles de rôle (client, entreprise, administrateur) sont appliquées par

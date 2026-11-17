@@ -16,6 +16,8 @@ import {
   useCompanies,
   usePublicCompanies,
   useConversationsForCurrentUser,
+  renameConversation,
+  deleteConversation,
   sendMessage,
   startConversation,
 } from "@/data/repository";
@@ -86,7 +88,12 @@ export function ClientMessagesPage({ selectedId }: { selectedId?: string } = {})
         onSelect={(id) => navigate({ to: "/client/messages/$id", params: { id } })}
         viewerId={user.id}
         badge="Fournisseur"
-        onSend={(id, text) => sendMessage(id, user.id, text)}
+        onSend={(id, text) => sendMessage(id, text)}
+        onRename={(id, nextSubject) => renameConversation(id, nextSubject)}
+        onDelete={async (id) => {
+          await deleteConversation(id);
+          await navigate({ to: "/client/messages" });
+        }}
         emptyTitle="Aucune conversation"
         emptyText="Créez un message pour contacter une entreprise."
       />

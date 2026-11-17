@@ -77,28 +77,8 @@ describe('produits, vitrine, panier et devis', () => {
   expect((await call(app, 'post', '/api/cart/items', {token: asCompany.token, body: {productId: 'p-published', quantity: 1}})).status).toBe(403);
  });
 
- it('ouvre une conversation avec sa première message pour une entreprise publiée', async () => {
-  const {token} = await login(app, 'client@test.mg');
-  const res = await call(app, 'post', '/api/conversations', {token, body: {companyId: 'co-approved', subject: 'Prix de 40 sacs', body: 'Bonjour, quel prix pour 40 sacs ?'}});
-  expect(res.status).toBe(201);
-  const message = await db.message.findFirst({where: {conversationId: res.body.id}});
-  expect(message?.body).toBe('Bonjour, quel prix pour 40 sacs ?');
-  expect(message?.senderUserId).toBe('u-client');
- });
-
- it('refuse une conversation avec une entreprise non publiée et une ouverture par une entreprise', async () => {
-  const {token} = await login(app, 'client@test.mg');
-  expect((await call(app, 'post', '/api/conversations', {token, body: {companyId: 'co-pending', subject: 'Devis', body: 'Bonjour'}})).status).toBe(400);
-  const asCompany = await login(app, 'owner@test.mg');
-  expect((await call(app, 'post', '/api/conversations', {token: asCompany.token, body: {companyId: 'co-approved', subject: 'Devis', body: 'Bonjour'}})).status).toBe(403);
- });
-
  it('garde les conversations hors de la vitrine publique', async () => {
-  const {token} = await login(app, 'client@test.mg');
-  await call(app, 'post', '/api/conversations', {token, body: {companyId: 'co-approved', subject: 'Prix de 40 sacs', body: 'Bonjour'}});
   const res = await call(app, 'get', '/api/public/snapshot');
-  // La vitrine publique renvoie des listes vides : aucune conversation ni
-  // aucun message d'un compte connecté n'y paraît.
   expect(res.body.conversations).toEqual([]);
   expect(res.body.messages).toEqual([]);
  });

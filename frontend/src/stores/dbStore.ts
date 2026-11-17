@@ -49,6 +49,8 @@ type DbActions = {
   upsertConversation: (conversation: Conversation) => void;
   removeConversation: (id: string) => void;
   addMessage: (message: MessageRecord) => void;
+  upsertMessage: (message: MessageRecord) => void;
+  removeMessage: (id: string) => void;
   setFavorite: (favorite: Favorite, on: boolean) => void;
 };
 
@@ -156,6 +158,16 @@ export const useDbStore = create<DbStore>()((set, get) => ({
         c.id === message.conversationId ? { ...c, updatedAt: message.createdAt } : c,
       ),
     })),
+
+  upsertMessage: (message) =>
+    set((state) => ({
+      messages: state.messages.some((item) => item.id === message.id)
+        ? state.messages.map((item) => (item.id === message.id ? message : item))
+        : [...state.messages, message],
+    })),
+
+  removeMessage: (id) =>
+    set((state) => ({ messages: state.messages.filter((message) => message.id !== id) })),
 
   setFavorite: (favorite, on) =>
     set((state) => ({
