@@ -2,8 +2,9 @@
 // Les trois espaces la partagent ; chacun fournit sa navigation.
 import type { ReactNode } from "react";
 import { Link, type LinkProps } from "@tanstack/react-router";
-import { ArrowRight, Building2, LogOut, Settings } from "lucide-react";
+import { ArrowRight, Building2, LogOut, Settings, ChevronDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./PublicLayout";
 import { useCurrentUser } from "@/data/repository";
@@ -24,6 +25,7 @@ export function WorkspaceShell({
   nav,
   children,
   right,
+  admin = false,
 }: {
   title: string;
   eyebrow: string;
@@ -31,12 +33,13 @@ export function WorkspaceShell({
   nav: WorkspaceNavItem[];
   children: ReactNode;
   right?: ReactNode;
+  admin?: boolean;
 }) {
   const user = useCurrentUser();
   const logout = useLogout();
 
   return (
-    <div className="workspace">
+    <div className={`workspace ${admin ? "admin-workspace" : ""}`}>
       <aside className="workspace-sidebar">
         <Logo />
         {organization && (
@@ -50,7 +53,7 @@ export function WorkspaceShell({
             </div>
           </div>
         )}
-        <nav className="workspace-nav">
+        <nav className="workspace-nav" aria-label="Navigation de l’espace">
           {nav.map((item) => (
             <Link
               key={item.label}
@@ -76,24 +79,20 @@ export function WorkspaceShell({
       </aside>
       <div className="workspace-body">
         <header className="workspace-header">
-          <div>
+          <div className="workspace-heading">
             <span className="text-muted-foreground">{eyebrow}</span>
-            <strong>{title}</strong>
+            {admin ? <h1>{title}</h1> : <strong>{title}</strong>}
           </div>
-          <div className="flex items-center gap-2">
-            {user && (
-              <span className="chip">
-                {user.firstName} {user.lastName}
-              </span>
-            )}
-            <Button variant="outline" onClick={() => void logout()}>
-              <LogOut />
-              Se déconnecter
-            </Button>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild><Button variant="ghost" className="account-menu" aria-label="Menu du compte">
+              <span className="account-avatar">{user?.firstName.charAt(0)}{user?.lastName.charAt(0)}</span>
+              <span className="account-name">{user?.firstName} {user?.lastName}<small>{user?.role === "ADMIN" ? "Administrateur" : user?.role === "COMPANY" ? "Entreprise" : "Client"}</small></span><ChevronDown />
+            </Button></DropdownMenuTrigger>
+            <DropdownMenuContent align="end"><DropdownMenuLabel>Mon compte</DropdownMenuLabel><DropdownMenuItem asChild><Link to="/parametres"><Settings />Paramètres</Link></DropdownMenuItem><DropdownMenuItem asChild><Link to="/"><ArrowRight />Retour au site</Link></DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem onSelect={() => void logout()}><LogOut />Se déconnecter</DropdownMenuItem></DropdownMenuContent>
+          </DropdownMenu>
         </header>
         <div className={`workspace-content ${right ? "with-right" : ""}`}>
-          <main>{children}</main>
+          <div className="workspace-slot">{children}</div>
           {right && <aside className="workspace-right">{right}</aside>}
         </div>
       </div>

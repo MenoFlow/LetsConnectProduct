@@ -1,4 +1,5 @@
 // Navigation et coquille de l'espace administrateur.
+import type { ReactNode } from "react";
 import { Outlet, useLocation } from "@tanstack/react-router";
 import { Building2, LayoutDashboard, Package, Tags, Users } from "lucide-react";
 import { WorkspaceShell, type WorkspaceNavItem } from "@/components/layout/WorkspaceShell";
@@ -11,7 +12,7 @@ const nav: WorkspaceNavItem[] = [
   { to: "/admin/categories", label: "Catégories", icon: Tags },
 ];
 
-export function AdminLayout({ title = "Administration" }: { title?: string }) {
+export function AdminLayout({ title = "Administration", children }: { title?: string; children?: ReactNode }) {
   const location = useLocation();
   const current =
     nav.find((i) => location.pathname === i.to) ??
@@ -19,11 +20,12 @@ export function AdminLayout({ title = "Administration" }: { title?: string }) {
 
   return (
     <WorkspaceShell
+      admin
       title={current?.label ?? title}
       eyebrow="Administration de la plateforme"
       nav={nav}
     >
-      <Outlet />
+      {children ?? <Outlet />}
     </WorkspaceShell>
   );
 }

@@ -46,7 +46,10 @@ export class RealtimeGateway implements OnGatewayConnection,OnGatewayDisconnect 
 
   async handleConnection(socket:Socket):Promise<void> {
     try {
-      if (socket.handshake.headers.origin !== process.env['FRONTEND_ORIGIN']) {
+      // Une requête même origine n'envoie pas d'en-tête Origin : on ne refuse que
+      // les origines réellement différentes (protection CSRF), comme le garde REST.
+      const origin = socket.handshake.headers.origin;
+      if (origin && origin !== process.env['FRONTEND_ORIGIN']) {
         this.reject(socket);
         return;
       }

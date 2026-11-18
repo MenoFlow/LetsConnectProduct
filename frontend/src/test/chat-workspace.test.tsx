@@ -66,7 +66,7 @@ describe("actions de conversation", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Supprimer la conversation" }));
     expect(screen.getByText(/Cette action supprimera la conversation/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Supprimer", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: /^Supprimer$/ }));
 
     await waitFor(() => {
       expect(onDelete).toHaveBeenCalledWith(conversation.id);

@@ -1,10 +1,15 @@
+// Écran administrateur — Catégories : carte d'ajout, renommage en dialogue et
+// suppression refusée tant que des produits y sont rattachés.
 import { useState } from "react";
+import { toast } from "sonner";
+import type { Category } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
   EmptyState,
   Field,
   SectionHeading,
 } from "@/components/common";
+import { ConfirmAction, RowActions } from "@/components/common/AdminUI";
 import {
   removeCategory,
   upsertCategory,
@@ -36,11 +41,11 @@ export function AdminCategoriesPage() {
   const products = useProducts();
   const [name, setName] = useState("");
   const [addError, setAddError] = useState("");
-  const [drafts, setDrafts] = useState<Record<string, string>>({});
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [notice, setNotice] = useState("");
+  const [renaming, setRenaming] = useState<Category | null>(null);
+  const [renameDraft, setRenameDraft] = useState("");
+  const [renameError, setRenameError] = useState("");
+  const [deleting, setDeleting] = useState<Category | null>(null);
   const [busy, setBusy] = useState(false);
-  const [serverError, setServerError] = useState("");
 
   function validateName(value: string, excludedId?: string): string {
     if (!normalizeName(value)) return "Le nom de la catégorie est obligatoire.";
@@ -66,7 +71,9 @@ export function AdminCategoriesPage() {
       return;
     }
     if (!id) {
-      setAddError("Le nom doit contenir au moins une lettre latine ou un chiffre.");
+      setAddError(
+        "Le nom doit contenir au moins une lettre latine ou un chiffre.",
+      );
       return;
     }
     if (categories.some((category) => category.id === id)) {
@@ -78,59 +85,74 @@ export function AdminCategoriesPage() {
     if (busy) return;
 
     setBusy(true);
-    setServerError("");
     try {
       // Identifiant vide : c'est le backend qui crée la catégorie et lui donne
       // son identifiant définitif.
       await upsertCategory({ id: "", name: cleanName });
       setName("");
       setAddError("");
-      setNotice(`La catégorie « ${cleanName} » a été ajoutée.`);
+      toast.success(`La catégorie « ${cleanName} » a été ajoutée.`);
     } catch (cause) {
-      setServerError(errorMessage(cause));
+      toast.error(errorMessage(cause));
     } finally {
       setBusy(false);
     }
   }
 
-  async function renameCategory(id: string, currentName: string) {
-    const cleanName = normalizeName(drafts[id] ?? currentName);
-    const validationError = validateName(cleanName, id);
-
+  async function confirmRename() {
+    if (!renaming) return;
+    const cleanName = normalizeName(renameDraft);
+    const validationError = validateName(cleanName, renaming.id);
     if (validationError) {
-      setErrors((previous) => ({ ...previous, [id]: validationError }));
+      setRenameError(validationError);
       return;
     }
     if (busy) return;
 
     setBusy(true);
-    setServerError("");
     try {
       // L’identifiant reste stable pour conserver les produits rattachés.
-      await upsertCategory({ id, name: cleanName });
-      setDrafts((previous) => ({ ...previous, [id]: cleanName }));
-      setErrors((previous) => ({ ...previous, [id]: "" }));
-      setNotice(`La catégorie « ${cleanName} » a été enregistrée.`);
+      await upsertCategory({ id: renaming.id, name: cleanName });
+      toast.success(`La catégorie « ${cleanName} » a été enregistrée.`);
+      setRenaming(null);
+      setRenameError("");
     } catch (cause) {
-      setServerError(errorMessage(cause));
+      toast.error(errorMessage(cause));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const deletingCount = deleting
+    ? products.filter((product) => product.categoryId === deleting.id).length
+    : 0;
+
+  async function confirmDelete() {
+    if (!deleting || deletingCount > 0 || busy) return;
+    setBusy(true);
+    try {
+      await removeCategory(deleting.id);
+      toast.success(`La catégorie « ${deleting.name} » a été supprimée.`);
+      setDeleting(null);
+    } catch (cause) {
+      toast.error(errorMessage(cause));
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <main className="container page-main">
-      <header className="page-head">
-        <h1 className="page-title">Catégories</h1>
-      </header>
-
+    <main className="workspace-page">
       <section className="workspace-band">
-        <SectionHeading title="Ajouter une catégorie" />
+        <SectionHeading
+          title="Ajouter une catégorie"
+          subtitle="Une catégorie organise le catalogue des matières premières."
+        />
         <form
-          className="form-grid"
+          className="category-add"
           onSubmit={(event) => {
             event.preventDefault();
-            addCategory();
+            void addCategory();
           }}
           noValidate
         >
@@ -164,13 +186,55 @@ export function AdminCategoriesPage() {
         </form>
       </section>
 
-      <p role="status" aria-live="polite">{notice}</p>
+      <ConfirmAction
+        open={Boolean(renaming)}
+        title="Renommer la catégorie"
+        description="Le nouveau nom s’applique immédiatement au catalogue. Les produits rattachés sont conservés."
+        busy={busy}
+        label="Enregistrer"
+        onClose={() => {
+          setRenaming(null);
+          setRenameError("");
+        }}
+        onConfirm={() => void confirmRename()}
+      >
+        <Field label="Nom de la catégorie">
+          <input
+            value={renameDraft}
+            onChange={(event) => {
+              setRenameDraft(event.target.value);
+              setRenameError("");
+            }}
+            aria-invalid={Boolean(renameError)}
+            aria-describedby={renameError ? "category-rename-error" : undefined}
+            required
+          />
+        </Field>
+        {renameError && (
+          <p className="form-error form-full" id="category-rename-error" role="alert">
+            {renameError}
+          </p>
+        )}
+      </ConfirmAction>
 
-      {serverError && (
-        <p className="form-error" role="alert">
-          {serverError}
-        </p>
-      )}
+      <ConfirmAction
+        open={Boolean(deleting)}
+        title="Supprimer la catégorie"
+        description={`Supprimer « ${deleting?.name ?? ""} » ? Cette action est irréversible.`}
+        busy={busy}
+        label="Supprimer la catégorie"
+        confirmDisabled={deletingCount > 0}
+        onClose={() => setDeleting(null)}
+        onConfirm={() => void confirmDelete()}
+      >
+        {deletingCount > 0 && (
+          <p className="form-help">
+            Suppression impossible : {pluralize(deletingCount, "produit", "produits")}{" "}
+            {deletingCount > 1 ? "utilisent" : "utilise"} encore cette catégorie.
+            Déplacez ou supprimez ces produits d’abord.
+          </p>
+        )}
+      </ConfirmAction>
 
       <section className="workspace-band">
         <SectionHeading
@@ -185,7 +249,7 @@ export function AdminCategoriesPage() {
             compact
           />
         ) : (
-          <ul>
+          <ul className="admin-category-list">
             {categories.map((category) => {
               const relatedProducts = products.filter(
                 (product) => product.categoryId === category.id,
@@ -194,106 +258,41 @@ export function AdminCategoriesPage() {
                 relatedProducts.map((product) => product.companyId),
               ).size;
               const productCount = relatedProducts.length;
-              const errorId = `category-error-${category.id}`;
-              const reasonId = `category-delete-reason-${category.id}`;
 
               return (
-                <li className="border-b border-border py-4" key={category.id}>
-                  <form
-                    className="form-grid"
-                    noValidate
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      renameCategory(category.id, category.name);
-                    }}
-                  >
-                    <Field label={`Nom de la catégorie : ${category.name}`}>
-                      <input
-                        value={drafts[category.id] ?? category.name}
-                        onChange={(event) => {
-                          const value = event.target.value;
-                          setDrafts((previous) => ({
-                            ...previous,
-                            [category.id]: value,
-                          }));
-                          setErrors((previous) => ({
-                            ...previous,
-                            [category.id]: "",
-                          }));
-                        }}
-                        aria-invalid={Boolean(errors[category.id])}
-                        aria-describedby={
-                          errors[category.id] ? errorId : undefined
-                        }
-                        required
-                      />
-                    </Field>
-
-                    <div>
-                      <p>{pluralize(productCount, "produit", "produits")}</p>
-                      <p className="text-muted-foreground">
-                        {pluralize(
-                          companyCount,
-                          "entreprise concernée",
-                          "entreprises concernées",
-                        )}
-                      </p>
-                    </div>
-
-                    <div className="form-actions">
-                      <Button type="submit" size="sm" variant="outline" disabled={busy}>
-                        Enregistrer
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="ghost"
-                        disabled={productCount > 0 || busy}
-                        aria-describedby={productCount > 0 ? reasonId : undefined}
-                        onClick={async () => {
-                          // Nouvelle vérification avant toute suppression.
-                          if (
-                            products.some(
-                              (product) => product.categoryId === category.id,
-                            )
-                          ) {
-                            return;
-                          }
-                          setBusy(true);
-                          setServerError("");
-                          try {
-                            await removeCategory(category.id);
-                            setNotice(
-                              `La catégorie « ${category.name} » a été supprimée.`,
-                            );
-                          } catch (cause) {
-                            setServerError(errorMessage(cause));
-                          } finally {
-                            setBusy(false);
-                          }
-                        }}
-                      >
-                        Supprimer
-                      </Button>
-                    </div>
-
-                    {errors[category.id] && (
-                      <p
-                        className="form-error form-full"
-                        id={errorId}
-                        role="alert"
-                      >
-                        {errors[category.id]}
-                      </p>
-                    )}
-                    {productCount > 0 && (
-                      <p className="form-help form-full" id={reasonId}>
-                        {productCount === 1
-                          ? "1 produit utilise cette catégorie"
-                          : `${productCount} produits utilisent cette catégorie`}
-                      </p>
-                    )}
-                  </form>
+                <li className="admin-category-row" key={category.id}>
+                  <div>
+                    <strong>{category.name}</strong>
+                    <p className="text-muted-foreground">
+                      {pluralize(productCount, "produit", "produits")} ·{" "}
+                      {pluralize(
+                        companyCount,
+                        "entreprise concernée",
+                        "entreprises concernées",
+                      )}
+                    </p>
+                  </div>
+                  <div className="table-actions">
+                    <RowActions
+                      name={category.name}
+                      disabled={busy}
+                      items={[
+                        {
+                          label: "Renommer",
+                          action: () => {
+                            setRenameDraft(category.name);
+                            setRenameError("");
+                            setRenaming(category);
+                          },
+                        },
+                        {
+                          label: "Supprimer",
+                          destructive: true,
+                          action: () => setDeleting(category),
+                        },
+                      ]}
+                    />
+                  </div>
                 </li>
               );
             })}

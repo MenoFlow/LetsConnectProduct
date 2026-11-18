@@ -1,11 +1,18 @@
 // Navigation et coquille de l'espace client.
+import type { ReactNode } from "react";
 import { Outlet, useLocation } from "@tanstack/react-router";
 import { Heart, LayoutDashboard, MessageSquare, ShoppingCart } from "lucide-react";
 import { WorkspaceShell, type WorkspaceNavItem } from "@/components/layout/WorkspaceShell";
 import { useCart, useFavorites } from "@/data/repository";
 import { useCurrentUser } from "@/data/repository";
 
-export function ClientLayout({ title = "Espace client" }: { title?: string }) {
+export function ClientLayout({
+  title = "Espace client",
+  children,
+}: {
+  title?: string;
+  children?: ReactNode;
+}) {
   const cart = useCart();
   const favorites = useFavorites();
   const user = useCurrentUser();
@@ -30,7 +37,7 @@ export function ClientLayout({ title = "Espace client" }: { title?: string }) {
 
   return (
     <WorkspaceShell title={current?.label ?? title} eyebrow="Espace client" nav={nav}>
-      <Outlet />
+      {children ?? <Outlet />}
     </WorkspaceShell>
   );
 }

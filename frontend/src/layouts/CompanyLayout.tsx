@@ -1,5 +1,6 @@
 // Navigation et coquille de l'espace entreprise.
 // Les entrées dépendent du rôle interne du membre (propriétaire, gérant, éditeur).
+import type { ReactNode } from "react";
 import { Outlet, useLocation } from "@tanstack/react-router";
 import {
   Building2,
@@ -19,7 +20,13 @@ import { CompanyRequestStatus } from "@/components/common/CompanyRequestStatus";
 import { can } from "@/lib/permissions";
 import { useCurrentUser } from "@/data/repository";
 
-export function CompanyLayout({ title = "Espace entreprise" }: { title?: string }) {
+export function CompanyLayout({
+  title = "Espace entreprise",
+  children,
+}: {
+  title?: string;
+  children?: ReactNode;
+}) {
   const user = useCurrentUser();
   const membership = useMyMembership();
   const company = useCurrentCompany();
@@ -65,7 +72,7 @@ export function CompanyLayout({ title = "Espace entreprise" }: { title?: string 
       nav={nav}
     >
       {company && <CompanyRequestStatus company={company} />}
-      <Outlet />
+      {children ?? <Outlet />}
     </WorkspaceShell>
   );
 }
