@@ -44,7 +44,7 @@ export function CompanyMessagesPage() {
       onSelect={setSelectedId}
       viewerId={user.id}
       badge="Client"
-      onSend={(id, text) => sendMessage(id, user.id, text)}
+      onSend={(id, text) => sendMessage(id, text)}
       emptyTitle="Aucune demande reçue pour le moment"
       emptyText="Les messages des clients apparaîtront ici."
     />

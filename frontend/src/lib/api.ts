@@ -35,6 +35,10 @@ export function onSessionExpired(handler: () => void) {
   sessionExpired = handler;
 }
 
+export function notifySessionExpired() {
+  sessionExpired?.();
+}
+
 type Method = "GET" | "POST" | "PATCH" | "DELETE";
 
 async function readPayload(response: Response): Promise<unknown> {
@@ -113,7 +117,7 @@ export async function api<T>(
   const payload = await readPayload(response);
 
   if (!response.ok) {
-    if (response.status === 401) sessionExpired?.();
+    if (response.status === 401) notifySessionExpired();
     throw new ApiError(response.status, messageOf(payload, response.status), fieldsOf(payload));
   }
   return payload as T;

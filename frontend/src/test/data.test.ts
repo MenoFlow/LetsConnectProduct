@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { Conversation, MessageRecord } from "@/types";
+import { useDbStore } from "@/stores/dbStore";
 import {
   getCompany,
   getProduct,
@@ -8,7 +10,10 @@ import {
   listProductsByCompany,
   listPublicCompanies,
   listPublicProducts,
+  sendMessage,
 } from "@/data/repository";
+const { emitRealtimeMock } = vi.hoisted(() => ({ emitRealtimeMock: vi.fn() }));
+vi.mock("@/lib/realtime", () => ({ emitRealtime: emitRealtimeMock }));
 import {
   approvedCompany,
   category,
@@ -61,5 +66,29 @@ describe("visibilité publique du catalogue", () => {
     expect(listProductsByCompany("c-pending").map((product) => product.id)).toEqual([
       "p-karibo",
     ]);
+  });
+
+  it("met à jour la conversation et ajoute le message confirmé par le serveur", async () => {
+    const conversation: Conversation = {
+      id: "conv-1",
+      companyId: "c-ok",
+      clientId: "u-3",
+      subject: "Demande",
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-02T00:00:00.000Z",
+    };
+    const message: MessageRecord = {
+      id: "msg-1",
+      conversationId: conversation.id,
+      senderUserId: "u-3",
+      body: "Bonjour",
+      createdAt: conversation.updatedAt,
+    };
+    emitRealtimeMock.mockResolvedValueOnce({ conversation, message });
+
+    await expect(sendMessage(conversation.id, message.body)).resolves.toEqual(message);
+
+    expect(useDbStore.getState().conversations).toContainEqual(conversation);
+    expect(useDbStore.getState().messages).toContainEqual(message);
   });
 });

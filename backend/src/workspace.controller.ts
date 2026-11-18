@@ -1,9 +1,10 @@
 import {Body,Controller,Delete,Get,Param,Patch,Post,Req,Query} from '@nestjs/common';
 import {AuthRequest,Public} from './security';
 import {WorkspaceService} from './workspace.service';
+import {RealtimeGateway} from './realtime.gateway';
 @Controller()
 export class WorkspaceController {
- constructor(private readonly service:WorkspaceService){}
+ constructor(private readonly service:WorkspaceService,private readonly realtime:RealtimeGateway){}
  @Public() @Get('public/snapshot') publicSnapshot(){return this.service.snapshot();}
  @Get('workspace') snapshot(@Req() r:AuthRequest){return this.service.snapshot(r.actor);}
  @Get('companies') async companies(@Req() r:AuthRequest){return (await this.service.snapshot(r.actor)).companies;}
@@ -26,20 +27,13 @@ export class WorkspaceController {
  @Patch('categories/:id') categoryUpdate(@Req() r:AuthRequest,@Param('id') id:string,@Body() b:unknown){return this.service.categorySave(r.actor,b,id);}
  @Delete('categories/:id') categoryDelete(@Req() r:AuthRequest,@Param('id') id:string){return this.service.categoryDelete(r.actor,id);}
  @Patch('users/:id') userUpdate(@Req() r:AuthRequest,@Param('id') id:string,@Body() b:unknown){return this.service.userUpdate(r.actor,id,b);}
- @Patch('users/:id/active') userActive(@Req() r:AuthRequest,@Param('id') id:string,@Body() b:unknown){return this.service.userActive(r.actor,id,b);}
- @Delete('users/:id') userDelete(@Req() r:AuthRequest,@Param('id') id:string){return this.service.userDelete(r.actor,id);}
+ @Patch('users/:id/active') async userActive(@Req() r:AuthRequest,@Param('id') id:string,@Body() b:unknown){const user=await this.service.userActive(r.actor,id,b);if(!user.isActive)this.realtime.disconnectUser(id);return user;}
+ @Delete('users/:id') async userDelete(@Req() r:AuthRequest,@Param('id') id:string){const user=await this.service.userDelete(r.actor,id);this.realtime.disconnectUser(id);return user;}
  @Get('companies/:id/member-lookup') memberLookup(@Req() r:AuthRequest,@Param('id') id:string,@Query('email') email:string){return this.service.memberLookup(r.actor,id,email||'');}
  @Post('members') memberCreate(@Req() r:AuthRequest,@Body() b:unknown){return this.service.memberSave(r.actor,b);}
  @Patch('members/:id') memberUpdate(@Req() r:AuthRequest,@Param('id') id:string,@Body() b:unknown){return this.service.memberSave(r.actor,b,id);}
- @Delete('members/:id') memberDelete(@Req() r:AuthRequest,@Param('id') id:string){return this.service.memberDelete(r.actor,id);}
+ @Delete('members/:id') async memberDelete(@Req() r:AuthRequest,@Param('id') id:string){const member=await this.service.memberDelete(r.actor,id);this.realtime.disconnectUser(member.userId,false);return member;}
  @Post('favorites/:companyId/toggle') favorite(@Req() r:AuthRequest,@Param('companyId') id:string){return this.service.favorite(r.actor,id);}
- @Post('conversations') conversationCreate(@Req() r:AuthRequest,@Body() b:unknown){return this.service.conversationCreate(r.actor,b);}
- @Patch('conversations/:id') conversationUpdate(@Req() r:AuthRequest,@Param('id') id:string,@Body() b:unknown){return this.service.conversationUpdate(r.actor,id,b);}
- @Delete('conversations/:id') conversationDelete(@Req() r:AuthRequest,@Param('id') id:string){return this.service.conversationDelete(r.actor,id);}
- @Post('conversations/:id/messages') messageCreate(@Req() r:AuthRequest,@Param('id') id:string,@Body() b:unknown){return this.service.messageCreate(r.actor,id,b);}
- @Post('conversations/:id/read') read(@Req() r:AuthRequest,@Param('id') id:string){return this.service.markRead(r.actor,id);}
- @Patch('messages/:id') messageUpdate(@Req() r:AuthRequest,@Param('id') id:string,@Body() b:unknown){return this.service.messageUpdate(r.actor,id,b);}
- @Delete('messages/:id') messageDelete(@Req() r:AuthRequest,@Param('id') id:string){return this.service.messageDelete(r.actor,id);}
  @Get('cart') cart(@Req() r:AuthRequest){return this.service.cartRead(r.actor);}
  @Post('cart/items') cartAdd(@Req() r:AuthRequest,@Body() b:unknown){return this.service.cartAdd(r.actor,b);}
  @Patch('cart/items/:id') cartQuantity(@Req() r:AuthRequest,@Param('id') id:string,@Body() b:unknown){return this.service.cartQuantity(r.actor,id,b);}

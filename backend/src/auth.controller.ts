@@ -6,9 +6,10 @@ import {hash,compare} from 'bcryptjs';
 import {PrismaService} from './prisma.service';
 import {Public,AuthRequest,safeUser,hashToken} from './security';
 import {parse,credentials,registration,changePassword} from './validation';
+import {RealtimeGateway} from './realtime.gateway';
 @Controller('auth')
 export class AuthController {
- constructor(private readonly db:PrismaService){}
+ constructor(private readonly db:PrismaService,private readonly realtime:RealtimeGateway){}
  private async session(userId:string,res:Response){
   const token=randomBytes(32).toString('base64url');
   await this.db.session.deleteMany({where:{expiresAt:{lt:new Date()}}});
@@ -45,7 +46,7 @@ export class AuthController {
  }
  @Get('me') me(@Req() req:AuthRequest){return req.actor;}
  @Public() @Post('logout') async logout(@Req() req:AuthRequest,@Res({passthrough:true}) res:Response){
-  const token=req.cookies?.['mc_session'];if(typeof token==='string')await this.db.session.deleteMany({where:{id:hashToken(token)}});
+  const token=req.cookies?.['mc_session'];if(typeof token==='string'){const sessionId=hashToken(token);await this.db.session.deleteMany({where:{id:sessionId}});this.realtime.disconnectSession(sessionId);}
   res.clearCookie('mc_session',{path:'/api',httpOnly:true,sameSite:'strict',secure:process.env['NODE_ENV']==='production'});return {ok:true};
  }
  @Post('password') async password(@Req() req:AuthRequest,@Body() body:unknown,@Res({passthrough:true}) res:Response){
@@ -53,6 +54,6 @@ export class AuthController {
   if(!await compare(v.currentPassword,user.passwordHash))throw new UnauthorizedException('Mot de passe actuel incorrect');
   const passwordHash=await hash(v.password,12);
   await this.db.$transaction([this.db.user.update({where:{id:user.id},data:{passwordHash}}),this.db.session.deleteMany({where:{userId:user.id}})]);
-  await this.session(user.id,res);return {ok:true};
+  await this.session(user.id,res);res.once('finish',()=>this.realtime.disconnectUser(user.id,false));return {ok:true};
  }
 }

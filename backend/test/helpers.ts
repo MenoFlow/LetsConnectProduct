@@ -34,7 +34,7 @@ type Method = 'get' | 'post' | 'patch' | 'delete';
 
 interface CallOptions {
  token?: string;
- body?: unknown;
+ body?: object | string;
  /** Origine envoyée ; null pour n'envoyer aucun en-tête Origin. */
  origin?: string | null;
  /** false pour n'envoyer aucun en-tête X-Requested-With. */

@@ -14,8 +14,9 @@ import {Errors} from './errors';
 import {AuthController} from './auth.controller';
 import {WorkspaceController} from './workspace.controller';
 import {WorkspaceService} from './workspace.service';
+import {RealtimeGateway} from './realtime.gateway';
 
-@Module({imports:[ThrottlerModule.forRoot([{name:'default',ttl:60000,limit:120}])],controllers:[AuthController,WorkspaceController],providers:[PrismaService,WorkspaceService,{provide:APP_GUARD,useClass:ThrottlerGuard},{provide:APP_GUARD,useClass:SessionGuard}]})
+@Module({imports:[ThrottlerModule.forRoot([{name:'default',ttl:60000,limit:120}])],controllers:[AuthController,WorkspaceController],providers:[PrismaService,WorkspaceService,RealtimeGateway,{provide:APP_GUARD,useClass:ThrottlerGuard},{provide:APP_GUARD,useClass:SessionGuard}]})
 export class AppModule {}
 
 /** Crée et configure l'application, sans l'écouter : les tests s'en servent. */

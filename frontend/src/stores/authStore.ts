@@ -8,6 +8,7 @@ import { create } from "zustand";
 import { api, ApiError, errorMessage } from "@/lib/api";
 import { normalizeUser } from "@/lib/normalize";
 import { loadPublicData, loadWorkspace } from "@/stores/dbStore";
+import { connectRealtime, stopRealtime } from "@/lib/realtime";
 import type { User } from "@/types";
 
 export type AuthStatus = "unknown" | "loading" | "ready";
@@ -52,13 +53,16 @@ export const useAuthStore = create<AuthState>()((set) => ({
       const user = normalizeUser(await api<User>("/auth/me"));
       set({ user, status: "ready" });
       await loadWorkspace();
+      connectRealtime(user.id);
     } catch (error) {
       // 401 = pas de session : on bascule sur les données publiques, sans erreur.
       if (isUnauthorized(error)) {
+        stopRealtime();
         set({ user: null, status: "ready", error: null });
         await loadPublicData();
         return;
       }
+      stopRealtime();
       set({ user: null, status: "ready", error: errorMessage(error) });
     }
   },
@@ -71,6 +75,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
       );
       set({ user, status: "ready", error: null });
       await loadWorkspace();
+      connectRealtime(user.id);
       return user;
     } catch (error) {
       set({ status: "ready", error: errorMessage(error) });
@@ -86,6 +91,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
       );
       set({ user, status: "ready", error: null });
       await loadWorkspace();
+      connectRealtime(user.id);
       return user;
     } catch (error) {
       set({ status: "ready", error: errorMessage(error) });
@@ -94,6 +100,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
   },
 
   logout: async () => {
+    stopRealtime();
     try {
       await api("/auth/logout", { method: "POST" });
     } finally {
@@ -112,6 +119,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
   },
 
   clearSession: () => {
+    stopRealtime();
     set({ user: null, status: "ready", error: null });
     void loadPublicData();
   },
